@@ -27,6 +27,7 @@ https://www.virtualbox.org/wiki/Downloads
 ## Building images from these templates
 ```
 git clone https://github.com/AdamGoldsmith/deploy-kubernetes.git
+cd deploy-kubernetes
 packer build templates/fedora-27/fedora-atomic-64bit.json
 ```
 
@@ -36,8 +37,11 @@ cd vagrant
 vagrant up
 ```
 
-## List of current templates
+## Packer templates
 * fedora-atomic-27
+
+## Vagrant deployments
+* CentOS-atomic-7
 
 ## What's next?
 A lot! Next steps are to incorporate Ansible playbooks to standardise the builds.
