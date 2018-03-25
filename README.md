@@ -7,7 +7,7 @@ developing a method of deploying this cluster using version controlled code and 
 Here's a high level overview of what I am hoping to acheive (this is highly subject to change!)
 
 * VirtualBox - great free virtualisation hosting software
-* Packer - create standard Fedora Atomic 27 base image (OVF in this case)
+* Packer - create standard Fedora Atomic 27 base image
 * Ansible - further configure base images ready for Kubernetes Master and Nodes
 * Fedora Atomic - lightweight, immutable platform, designed with the sole purpose of running containerized applications
 * etcd - for the Kubernetes backend storage mechanism
@@ -17,7 +17,7 @@ Here's a high level overview of what I am hoping to acheive (this is highly subj
 You need to instal packer from hashicorp in order to use these templates
 https://www.packer.io/downloads.html
 
-You need to instal VirtualBox in order to use these OVF templates
+You need to instal VirtualBox in order to use these templates
 https://www.virtualbox.org/wiki/Downloads
 
 ## Building images from these templates
