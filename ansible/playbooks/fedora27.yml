@@ -1,0 +1,11 @@
+- hosts: all
+  gather_facts: true
+  become: true
+  become_method: sudo
+  tasks:
+  - name: Install latest version of apache2
+    dnf:
+      name: apache2
+      state: latest
+      update_cache: yes
+ 

@@ -1,0 +1,83 @@
+{
+  "variables": {
+    "ssh_username": "atomic",
+    "ssh_pass": "atomic",
+    "hostname": "k8s-master",
+    "http_dir": "http_dir",
+    "http_port_min": "9050",
+    "http_port_max": "9060",
+    "iso_url": "https://download.fedoraproject.org/pub/alt/atomic/stable/Fedora-Atomic-27-20180314.0/Atomic/x86_64/iso/Fedora-Atomic-ostree-x86_64-27-20180314.0.iso",
+    "iso_checksum": "c4ac480367a5250d7af93f6acd51c6552ce9e8762a3759e9554821e333356917",
+    "iso_checksum_type": "sha256",
+    "scripts_dir": "scripts",
+    "ansible_dir": "ansible",
+    "memsize": "512",
+    "numcpus": "1",
+    "disksize": "20480",
+    "kickstart": "atomic-ks.cfg"
+  },
+
+  "builders": [{
+    "type": "virtualbox-iso",
+    "guest_os_type": "Fedora_64",
+    "http_directory" : "{{user `http_dir` }}",
+    "http_port_min" : "{{user `http_port_min`}}",
+    "http_port_max" : "{{user `http_port_max`}}",
+    "iso_url": "{{user `iso_url`}}",
+    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_checksum_type": "{{user `iso_checksum_type`}}",
+    "ssh_username": "{{user `ssh_username`}}",
+    "ssh_password": "{{user `ssh_pass`}}",
+    "ssh_wait_timeout": "10m",
+    "headless": "false",
+    "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
+    "disk_size" : "{{user `disksize`}}",
+    "boot_wait" : "5s",
+    "boot_command": [
+      "<tab> linux text biosdevname=0 ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/{{ user `kickstart` }} quiet<enter><enter>"
+    ],
+    "vboxmanage": [
+      ["modifyvm", "{{ .Name }}", "--description", "Fedora-Atomic 27 - Kubernetes Master"],
+      ["modifyvm", "{{ .Name }}", "--bioslogoimagepath", "{{ template_dir }}/../images/AG.bmp"],
+      ["modifyvm", "{{ .Name }}", "--memory", "{{user `memsize`}}"],
+      ["modifyvm", "{{ .Name }}", "--cpus", "{{user `numcpus`}}"],
+      ["modifyvm", "{{ .Name }}", "--rtcuseutc", "on"],
+      ["modifyvm", "{{ .Name }}", "--clipboard", "bidirectional"]
+    ]
+  },
+  {
+    "type": "vmware-iso",
+    "guest_os_type": "Fedora-64",
+    "http_directory" : "{{user `http_dir` }}",
+    "http_port_min" : "{{user `http_port_min`}}",
+    "http_port_max" : "{{user `http_port_max`}}",
+    "iso_url": "{{user `iso_url`}}",
+    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_checksum_type": "{{user `iso_checksum_type`}}",
+    "ssh_username": "{{user `ssh_username`}}",
+    "ssh_password": "{{user `ssh_pass`}}",
+    "ssh_wait_timeout": "10m",
+    "headless": "true",
+    "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
+    "disk_size" : "{{user `disksize`}}",
+    "boot_wait" : "5s",
+    "boot_command" : [
+      "<tab> linux enforcing=0 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/atomic-ks.cfg<enter><wait>"
+    ],
+    "vmx_data": {
+      "memsize": "{{user `memsize`}}",
+      "numvcpus": "{{user `numcpus`}}"
+    }
+  }],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "echo '{{user `ssh_pass`}}' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'",
+      "inline": [
+        "echo '{{user `ssh_username`}} ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers"
+      ]
+    }
+  ]
+}
+
