@@ -1,23 +1,63 @@
 # -*- mode: ruby -*-
-# vi: set ft=ruby :
+# vi: set ft=ruby
 
-# All Vagrant configuration is done below. The "2" in Vagrant.configure
-# configures the configuration version (we support older styles for
-# backwards compatibility). Please don't change it unless you know what
-# you're doing.
-Vagrant.configure("2") do |config|
-  # The most common configuration options are documented and commented below.
-  # For a complete reference, please see the online documentation at
-  # https://docs.vagrantup.com.
+BRIDGE_NET="192.168.10."
+DOMAIN="local.com"
+servers=[
+  {
+    :hostname => "atomic-master." + DOMAIN,
+    :ip => BRIDGE_NET + "10",
+    :ssh_port => "2222",
+    :ram => 1024
+  },
+  {
+    :hostname => "atomic-node1." + DOMAIN,
+    :ip => BRIDGE_NET + "20",
+    :ssh_port => "2223",
+    :ram => 512
+  },
+  {
+    :hostname => "atomic-node2." + DOMAIN,
+    :ip => BRIDGE_NET + "21",
+    :ssh_port => "2224",
+    :ram => 512
+  },
+  {
+    :hostname => "atomic-node3." + DOMAIN,
+    :ip => BRIDGE_NET + "22",
+    :ssh_port => "2225",
+    :ram => 512
+  },
+  {
+    :hostname => "atomic-node4." + DOMAIN,
+    :ip => BRIDGE_NET + "23",
+    :ssh_port => "2226",
+    :ram => 512
+  }
+]
 
-  # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "Atomic-27"
-
-  # Disable automatic box update checking. If you disable this, then
-  # boxes will only be checked for updates when the user runs
-  # `vagrant box outdated`. This is not recommended.
-  # config.vm.box_check_update = false
+Vagrant.configure(2) do |config|
+  servers.each do |machine|
+    config.vm.define machine[:hostname] do |node|
+      node.vm.box = "centos/atomic-host"
+#      node.vm.box_url = "http://cloud.centos.org/centos/7/atomic/images/CentOS-Atomic-Host-7-Vagrant-Virtualbox.box"
+#      node.vm.box_download_checksum = 
+      node.vm.usable_port_range = (2222..2250)
+      node.vm.hostname = machine[:hostname]
+      #node.vm.network "public_network", ip: machine[:ip], bridge: 'Intel(R) Centrino(R) Wireless-N 130'
+      node.vm.network "private_network", ip: machine[:ip], virtualbox__intnet: "intnet"
+#      node.vm.network "forwarded_port", guest: 22, host: machine[:ssh_port]
+      #node.ssh.host = machine[:ip]
+      #node.ssh.private_key_path = "private_key"
+      #node.ssh.username = "atomic"
+      node.ssh.password = "vagrant"
+      node.vm.provider "virtualbox" do |vb|
+        vb.customize ["modifyvm", :id, "--memory", machine[:ram]]
+        vb.name = machine[:hostname]
+      end
+    end
+  end
+end
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -67,4 +107,3 @@ Vagrant.configure("2") do |config|
   #   apt-get update
   #   apt-get install -y apache2
   # SHELL
-end

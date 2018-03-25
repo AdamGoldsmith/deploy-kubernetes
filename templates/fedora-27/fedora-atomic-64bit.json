@@ -38,11 +38,10 @@
       "<tab> linux text biosdevname=0 ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/{{ user `kickstart` }} quiet<enter><enter>"
     ],
     "vboxmanage": [
-      ["modifyvm", "{{ .Name }}", "--description", "Fedora-Atomic 27 - Kubernetes Master"],
+      ["modifyvm", "{{ .Name }}", "--description", "Atomic 27"],
       ["modifyvm", "{{ .Name }}", "--bioslogoimagepath", "{{ template_dir }}/../images/AG.bmp"],
       ["modifyvm", "{{ .Name }}", "--memory", "{{user `memsize`}}"],
       ["modifyvm", "{{ .Name }}", "--cpus", "{{user `numcpus`}}"],
-      ["modifyvm", "{{ .Name }}", "--natpf1", "guest_ssh,tcp,,2222,,22" ],
       ["modifyvm", "{{ .Name }}", "--rtcuseutc", "on"],
       ["modifyvm", "{{ .Name }}", "--clipboard", "bidirectional"]
     ]
