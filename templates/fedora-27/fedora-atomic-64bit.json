@@ -20,9 +20,9 @@
   "builders": [{
     "type": "virtualbox-iso",
     "guest_os_type": "Fedora_64",
-    "http_directory" : "{{user `http_dir` }}",
-    "http_port_min" : "{{user `http_port_min`}}",
-    "http_port_max" : "{{user `http_port_max`}}",
+    "http_directory": "{{user `http_dir` }}",
+    "http_port_min": "{{user `http_port_min`}}",
+    "http_port_max": "{{user `http_port_max`}}",
     "iso_url": "{{user `iso_url`}}",
     "iso_checksum": "{{user `iso_checksum`}}",
     "iso_checksum_type": "{{user `iso_checksum_type`}}",
@@ -31,8 +31,9 @@
     "ssh_wait_timeout": "10m",
     "headless": "false",
     "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
-    "disk_size" : "{{user `disksize`}}",
-    "boot_wait" : "5s",
+    "disk_size": "{{user `disksize`}}",
+    "guest_additions_mode": "disable",
+    "boot_wait": "5s",
     "boot_command": [
       "<tab> linux text biosdevname=0 ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/{{ user `kickstart` }} quiet<enter><enter>"
     ],
@@ -41,6 +42,7 @@
       ["modifyvm", "{{ .Name }}", "--bioslogoimagepath", "{{ template_dir }}/../images/AG.bmp"],
       ["modifyvm", "{{ .Name }}", "--memory", "{{user `memsize`}}"],
       ["modifyvm", "{{ .Name }}", "--cpus", "{{user `numcpus`}}"],
+      ["modifyvm", "{{ .Name }}", "--natpf1", "guest_ssh,tcp,,2222,,22" ],
       ["modifyvm", "{{ .Name }}", "--rtcuseutc", "on"],
       ["modifyvm", "{{ .Name }}", "--clipboard", "bidirectional"]
     ]
@@ -48,9 +50,9 @@
   {
     "type": "vmware-iso",
     "guest_os_type": "Fedora-64",
-    "http_directory" : "{{user `http_dir` }}",
-    "http_port_min" : "{{user `http_port_min`}}",
-    "http_port_max" : "{{user `http_port_max`}}",
+    "http_directory": "{{user `http_dir` }}",
+    "http_port_min": "{{user `http_port_min`}}",
+    "http_port_max": "{{user `http_port_max`}}",
     "iso_url": "{{user `iso_url`}}",
     "iso_checksum": "{{user `iso_checksum`}}",
     "iso_checksum_type": "{{user `iso_checksum_type`}}",
@@ -59,9 +61,9 @@
     "ssh_wait_timeout": "10m",
     "headless": "true",
     "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
-    "disk_size" : "{{user `disksize`}}",
-    "boot_wait" : "5s",
-    "boot_command" : [
+    "disk_size": "{{user `disksize`}}",
+    "boot_wait": "5s",
+    "boot_command": [
       "<tab> linux enforcing=0 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/atomic-ks.cfg<enter><wait>"
     ],
     "vmx_data": {
