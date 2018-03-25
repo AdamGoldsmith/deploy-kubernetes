@@ -14,15 +14,17 @@ Here's a high level overview of what I am hoping to acheive (this is highly subj
 * Kubernetes - open-source system for automating deployment, scaling and management of containerized applications
 
 ## Requirements
-You need to instal packer from hashicorp in order to use these templates
+You need to install packer from hashicorp in order to use these templates
 https://www.packer.io/downloads.html
 
-You need to instal VirtualBox in order to use these templates
+You need to install VirtualBox in order to use these templates
 https://www.virtualbox.org/wiki/Downloads
 
 ## Building images from these templates
+```
 git clone https://github.com/AdamGoldsmith/deploy-kubernetes.git
 packer build templates/fedora-27/fedora-atomic-64bit.json
+```
 
 ## List of current templates
 Absent as yet!
